@@ -3,9 +3,10 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
-// // Load Idea Model
-// require('../models/Idea');
-// const Idea = mongoose.model('ideas');
+
+// // Load I uder Model
+require('../models/User');
+const User = mongoose.model('users');
 
 //useer login route
 router.get('/login', (req, res) => {
@@ -35,15 +36,29 @@ router.post('/register', (req, res) => {
       password2: req.body.password2
     });
   } else {
-    const newUser = {
+    const newUser = new User ({
       name: req.body.name,
       email: req.body.email,
       password: req.body.password,
       password2: req.body.password2
-    };
+    });
 
-    bcrypt.genSalt()
-    res.send('passed');
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(newUser.password, salt, (err, hash) => {
+        if (err) throw err;
+        newUser.password = hash;
+        newUser
+          .save()
+          .then(user => {
+            req.flash('success_msg', 'You are now registered.');
+            res.redirect('/users/login');
+          })
+          .catch(err => {
+            console.log(err);
+            return;
+          });
+      });
+    });
   }
 });
 
