@@ -25,7 +25,7 @@ mongoose.Promise = global.Promise;
 const db = require('./config/database');
 //db.mongoURI
 mongoose
-  .connect(process.env.mongoURI, {
+  .connect(process.env.MONGOURI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
