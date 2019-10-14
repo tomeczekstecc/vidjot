@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 const flash = require('connect-flash');
 const session = require('express-session');
-const passport= require('passport')
+const passport = require('passport');
 const mongoose = require('mongoose');
 
 const app = express();
@@ -15,14 +15,17 @@ const ideas = require('./routes/ideas');
 const users = require('./routes/users');
 
 //passport config
-require('./config/passport')(passport)
-
+require('./config/passport')(passport);
 
 // Map global promise - get rid of warning
 mongoose.Promise = global.Promise;
 // Connect to mongoose
+
+//bring mongo db config
+const db = require('./config/database');
+
 mongoose
-  .connect('mongodb://localhost/vidjot-dev', {
+  .connect(db.mongoURI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
@@ -42,9 +45,8 @@ app.set('view engine', 'handlebars');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-
 //static page/folder setup
-app.use(express.static(path.join(__dirname,'public')))
+app.use(express.static(path.join(__dirname, 'public')));
 
 //Method override
 app.use(methodOverride('_method'));
@@ -58,12 +60,17 @@ app.use(
   })
 );
 
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(flash());
 //global vars
 app.use(function(req, res, next) {
   res.locals.success_msg = req.flash('success_msg');
   res.locals.error_msg = req.flash('error_msg');
   res.locals.error = req.flash('error');
+  res.locals.user = req.user || null;
   next();
 });
 
@@ -84,8 +91,10 @@ app.get('/about', (req, res) => {
 app.use('/ideas', ideas);
 app.use('/users', users);
 
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 app.listen(port, () => {
-  console.log(`Server started on port ${port}`);
+  console.log(
+    `Server started on port ${port}. Go to http://localhost:5000 to see app`
+  );
 });
