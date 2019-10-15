@@ -23,7 +23,8 @@ mongoose.Promise = global.Promise;
 
 //bring mongo db config
 const db = require('./config/database');
-//db.mongoURI
+
+//db.mongoURI - MOZNA UŻYĆ ZAMIAST process.env.MONGOURI, ALE WTEDY ODKOMENTOWAĆ DATABASE.JS I MOZNA USUNĄĆ VARS W APLIKACJI HEROKKU W USTAWIENIACHJ
 mongoose
   .connect(process.env.MONGOURI, {
     useNewUrlParser: true,
