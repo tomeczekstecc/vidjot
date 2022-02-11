@@ -15,7 +15,7 @@
     "connect-flash": "^0.1.1",
     "eslint": "^6.5.1",
     "express": "^4.17.1",
-    "express-handlebars": "^3.1.0",
+    "express-handlebars": "^5.3.1",
     "express-session": "^1.17.0",
     "heroku": "^7.33.3",
     "heroku-cli": "^7.0.9",
